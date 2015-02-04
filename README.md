@@ -19,11 +19,13 @@ For example:
 	<script type="text/conditional-html" class="responsive-loader" data-target="example-1" data-media-query='(min-width:30em)'>
 		<h1>Text at min-width:30em</h1>
 	</script>
+	<noscript><h1>Text at min-width:30em</h1></noscript>
 </div>
 <div id="example-2">
 	<script type="text/conditional-html" class="responsive-loader" data-target="example-1" data-media-query='(min-width:48em)'>
 		<h1>Text at min-width:48em</h1>
 	</script>
+	<noscript><h1>Text at min-width:48em</h1></noscript>
 </div>
 ```
 
