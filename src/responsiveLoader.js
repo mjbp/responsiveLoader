@@ -2,15 +2,7 @@
 (function () {
 	'use strict';
 	
-	/*
-	 * @roadmap 
-	 * - different content for different mediaqueries, data-sizes and data-target
-	 * - https://raw.githubusercontent.com/aFarkas/lazysizes/gh-pages/lazysizes.js
-	 * - browsers support - do not polyfill add/remove eventListener, matchMedia
-	 */
-	
 	var options = {
-            bp : '(min-width: 960px)',
 			className : 'responsive-loader',
 			callback : false
 		},
@@ -29,17 +21,20 @@
 	
 	function ResponsiveLoader(o) {
 		this.options = UTILS.extend({}, options, o);
+		this.loadCount = 0;
 		this.init();
 	}
 	
 	ResponsiveLoader.prototype = {
-		loadContent : function () {
+		loadContent : function (i) {
 			var self = this;
-			window.removeEventListener('resize', self.conditionHandler);
-			for (var i = 0; i < self.content.length; i++) {
-				document.getElementById(self.content[i].target).innerHTML = self.content[i].html;
+			this.loadCount++;
+			document.getElementById(self.content[i].target).innerHTML = self.content[i].html;
+			self.content[i].loaded = true;
+			if(this.loadCount === (this.content.length)) {
+				window.removeEventListener('resize', self.conditionHandler, false);
 			}
-			self.options.callback && self.options.callback();
+			self.options.callback && self.options.callback(self.content[i].target);
 		},
 		preloadContent : function () {
 			var content = [],
@@ -49,20 +44,24 @@
 				if (~scripts[i].className.indexOf(this.options.className)) {
 					content.push({
 						target: scripts[i].getAttribute('data-target'),
-						html: scripts[i].innerHTML
+						html: scripts[i].innerHTML,
+						mq: scripts[i].getAttribute('data-media-query'),
+						loaded: false
 					});
 				}
 			}
 			this.content = content;
 		},
-		meetsCondition : function () {
+		meetsCondition : function (mq) {
 			var self = this;
-			return window.matchMedia(self.options.bp).matches;
+			return window.matchMedia(mq).matches;
 		},
 		checkCondition : function () {
 			var self = this;
-			if (!!self.meetsCondition()) {
-				self.loadContent();
+			for (var i = 0; i < self.content.length; i++) {
+				if (!self.content[i].loaded && !!self.meetsCondition(self.content[i].mq)) {
+					self.loadContent(i);
+				}
 			}
 		},
 		init : function () {
@@ -71,11 +70,8 @@
 			if (!!this.content.length) {
 				this.conditionHandler = this.checkCondition.bind(this);
 				if (typeof window.matchMedia != 'undefined' || typeof window.msMatchMedia != 'undefined') {
-					if (!!self.meetsCondition()) {
-						self.loadContent();
-					} else {
-						window.addEventListener('resize', self.conditionHandler);
-					}
+					this.conditionHandler();
+					window.addEventListener('resize', self.conditionHandler, false);
 				} else {
 					self.loadContent();
 				}

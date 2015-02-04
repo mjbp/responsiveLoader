@@ -9,13 +9,6 @@
 (function () {
 	'use strict';
 	
-	/*
-	 * @roadmap 
-	 * - different content for different mediaqueries, data-sizes and data-target
-	 * - https://raw.githubusercontent.com/aFarkas/lazysizes/gh-pages/lazysizes.js
-	 * - browsers support - do not polyfill add/remove eventListener, matchMedia
-	 */
-	
 	var options = {
 			className : 'responsive-loader',
 			callback : false
@@ -84,13 +77,6 @@
 			if (!!this.content.length) {
 				this.conditionHandler = this.checkCondition.bind(this);
 				if (typeof window.matchMedia != 'undefined' || typeof window.msMatchMedia != 'undefined') {
-					//self.checkCondition || window.addEventListener('resize', self.conditionHandler);
-					/*
-					if (!!self.meetsCondition()) {
-						self.loadContent();
-					} else {
-						window.addEventListener('resize', self.conditionHandler);
-					}*/
 					this.conditionHandler();
 					window.addEventListener('resize', self.conditionHandler, false);
 				} else {

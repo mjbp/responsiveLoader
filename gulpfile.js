@@ -3,6 +3,7 @@ var pkg = require('./package.json');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var header = require('gulp-header');
+var deploy = require('gulp-gh-pages');
 
 var banner = [
     '/**',
@@ -32,4 +33,9 @@ gulp.task('compress', function() {
         .pipe(uglify({preserveComments: 'some'}))
         .pipe(rename('forrm.min.js'))
         .pipe(gulp.dest(dest));
+});
+
+gulp.task('deploy', function () {
+    return gulp.src('./demo/**/*')
+        .pipe(deploy());
 });
