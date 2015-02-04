@@ -5,7 +5,7 @@
 	<style>
 		* {margin:0}
 		body {font: 16px/1.4 'Lora', serif;color:#919191;}
-		div {width:;max-width:;margin:1rem auto;}
+		div {width:80%;max-width:;margin:1rem auto;}
 		h1 {font-size:1.75rem;}
 		img {max-width:100%;display:block;}
 		@media screen and min-width(30em) {
@@ -25,38 +25,40 @@
 		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut pretium magna, at congue justo.</p>
 	</div>
 	<div id="example-1">
-		<script type="text/conditional-html" class="responsive-loader" data-target="example-1" data-media-query='min-width(30em)'>
-			<h1>Text at min-width(30em)</h1>
+		<script type="text/conditional-html" class="responsive-loader" data-target="example-1" data-media-query='(min-width:30em)'>
+			<h1>Text at min-width:30em</h1>
 			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut pretium magna, at congue justo.</p>
 		</script>
 		<noscript>
-			<h1>Text at min-width(30em)</h1>
+			<h1>Text at min-width:30em</h1>
 			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut pretium magna, at congue justo.</p>
 		</noscript>
 	</div>
 	<div id="example-2">
-		<script type="text/conditional-html" class="responsive-loader" data-target="example-2" data-media-query='min-width(48em)'>
-			<h1>Text at min-width(48em)</h1>
+		<script type="text/conditional-html" class="responsive-loader" data-target="example-2" data-media-query='(min-width:48em)'>
+			<h1>Text at min-width:48em</h1>
 			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut pretium magna, at congue justo.</p>
 		</script>
 		<noscript>
-			<h1>Text at min-width(48em)</h1>
+			<h1>Text at min-width:48em</h1>
 			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut pretium magna, at congue justo.</p>
 		</noscript>
 	</div>
 	<div id="example-3">
-		<script type="text/conditional-html" class="responsive-loader" data-target="example-3" data-media-query='min-width(64em)'>
-			<h1>Text at min-width(64em)</h1>
+		<script type="text/conditional-html" class="responsive-loader" data-target="example-3" data-media-query='(min-width:64em)'>
+			<h1>Text at min-width:64em</h1>
 			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut pretium magna, at congue justo.</p>
 		</script>
 		<noscript>
-			<h1>Text at min-width(64em)</h1>
+			<h1>Text at min-width:64em</h1>
 			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut pretium magna, at congue justo.</p>
 		</noscript>
 	</div>
-	<script src="../dist/responsiveLoader.min.js"></script>
+	<script src="../dist/responsiveLoader.js"></script>
 	<script>
-		responsiveLoader.init();
+		ResponsiveLoader.run({callback: function(id) {
+			console.log('Loading content: ' + id);
+		}});
 	</script>
 </body>
 </html>

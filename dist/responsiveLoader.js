@@ -1,26 +1,54 @@
-/*global UTILS, document, window, console, define, module*/
+/**
+ * @name responsiveLoader: Conditionally load content based on media query
+ * @version 0.2.0 Wed, 04 Feb 2015 22:46:50 GMT
+ * @author mjbp
+ * @license 
+ * @url https://github.com/mjbp/responsiveLoader/
+ */
+/*global document, window, console, define, module*/
 (function () {
 	'use strict';
 	
+	/*
+	 * @roadmap 
+	 * - different content for different mediaqueries, data-sizes and data-target
+	 * - https://raw.githubusercontent.com/aFarkas/lazysizes/gh-pages/lazysizes.js
+	 * - browsers support - do not polyfill add/remove eventListener, matchMedia
+	 */
+	
 	var options = {
-            bp : '(min-width: 960px)',
 			className : 'responsive-loader',
 			callback : false
-       	};
+		},
+		UTILS = {
+			extend : function () {
+				for(var i = 1; i < arguments.length; i++) {
+					for(var key in arguments[i]) {
+						if(arguments[i].hasOwnProperty(key)) {
+							arguments[0][key] = arguments[i][key];
+						}
+					}
+				}
+				return arguments[0];
+			}
+		};
 	
 	function ResponsiveLoader(o) {
 		this.options = UTILS.extend({}, options, o);
+		this.loadCount = 0;
 		this.init();
 	}
 	
 	ResponsiveLoader.prototype = {
-		loadContent : function () {
+		loadContent : function (i) {
 			var self = this;
-			UTILS.off(window, 'resize', self.conditionHandler);
-			for (var i = 0; i < self.content.length; i++) {
-				document.getElementById(self.content[i].target).innerHTML = self.content[i].html;
+			this.loadCount++;
+			document.getElementById(self.content[i].target).innerHTML = self.content[i].html;
+			self.content[i].loaded = true;
+			if(this.loadCount === (this.content.length)) {
+				window.removeEventListener('resize', self.conditionHandler, false);
 			}
-			self.options.callback && self.options.callback();
+			self.options.callback && self.options.callback(self.content[i].target);
 		},
 		preloadContent : function () {
 			var content = [],
@@ -30,20 +58,24 @@
 				if (~scripts[i].className.indexOf(this.options.className)) {
 					content.push({
 						target: scripts[i].getAttribute('data-target'),
-						html: scripts[i].innerHTML
+						html: scripts[i].innerHTML,
+						mq: scripts[i].getAttribute('data-media-query'),
+						loaded: false
 					});
 				}
 			}
 			this.content = content;
 		},
-		meetsCondition : function () {
+		meetsCondition : function (mq) {
 			var self = this;
-			return window.matchMedia(self.options.bp).matches;
+			return window.matchMedia(mq).matches;
 		},
 		checkCondition : function () {
 			var self = this;
-			if (!!self.meetsCondition()) {
-				self.loadContent();
+			for (var i = 0; i < self.content.length; i++) {
+				if (!self.content[i].loaded && !!self.meetsCondition(self.content[i].mq)) {
+					self.loadContent(i);
+				}
 			}
 		},
 		init : function () {
@@ -52,11 +84,15 @@
 			if (!!this.content.length) {
 				this.conditionHandler = this.checkCondition.bind(this);
 				if (typeof window.matchMedia != 'undefined' || typeof window.msMatchMedia != 'undefined') {
+					//self.checkCondition || window.addEventListener('resize', self.conditionHandler);
+					/*
 					if (!!self.meetsCondition()) {
 						self.loadContent();
 					} else {
-						UTILS.on(window, 'resize', self.conditionHandler);
-					}
+						window.addEventListener('resize', self.conditionHandler);
+					}*/
+					this.conditionHandler();
+					window.addEventListener('resize', self.conditionHandler, false);
 				} else {
 					self.loadContent();
 				}
