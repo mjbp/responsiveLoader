@@ -1,0 +1,23 @@
+{
+	"name": "responsiveLoader",
+	"author": "mjbp",
+	"description": "Conditionally load content based on media query",
+	"version": "0.2.0",
+	"repository": {
+		"type" : "git",
+		"url" :"https://github.com/mjbp/responsiveLoader/"
+	},
+	"devDependencies": {
+		"gulp": "^3.8.8",
+		"gulp-rename": "^1.2.0",
+		"gulp-uglify": "^1.0.2",
+		"gulp-header": "^1.2.2",
+	},
+	"jshintConfig" : {
+		"-W084" : true,
+		"predef": ["document", "define", "module"]
+	},
+	"scripts": {
+		"start": "gulp dev"
+	}
+}
