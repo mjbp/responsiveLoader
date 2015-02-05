@@ -23,19 +23,18 @@ gulp.task('compile', function() {
         .pipe(gulp.dest(dest));
 });
 
-gulp.task('dev', ['compile'], function() {
-    gulp.watch(['src/*.js',], ['compile', 'compress']);
-});
-
-
 gulp.task('compress', function() {
     return gulp.src(dest + '<%= pkg.name %>.js')
         .pipe(uglify({preserveComments: 'some'}))
-        .pipe(rename('forrm.min.js'))
+        .pipe(rename('responsiveLoader.min.js'))
         .pipe(gulp.dest(dest));
 });
 
 gulp.task('deploy', function () {
     return gulp.src('./demo/**/*')
         .pipe(deploy());
+});
+
+gulp.task('watch', function () {
+    gulp.watch('src/*.js', ['compile']);
 });
