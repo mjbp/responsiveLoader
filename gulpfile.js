@@ -16,6 +16,7 @@ var banner = [
 ].join('\n');
 
 var dest = 'dist/';
+var demo = 'demo/';
 
 gulp.task('compile', function() {
     return gulp.src('responsiveLoader.js', {cwd: 'src'})
@@ -28,6 +29,11 @@ gulp.task('compress', function() {
         .pipe(uglify({preserveComments: 'some'}))
         .pipe(rename('responsiveLoader.min.js'))
         .pipe(gulp.dest(dest));
+});
+
+gulp.task('copy', function(){
+    return gulp.src(dest + 'responsiveLoader.js')
+        .pipe(gulp.dest(demo));
 });
 
 gulp.task('deploy', function () {
