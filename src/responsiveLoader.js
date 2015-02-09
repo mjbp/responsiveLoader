@@ -1,4 +1,4 @@
-/*global UTILS, document, window, console, define, module*/
+/*global UTILS, document, window, console, define, module, clearTimeout, setTimeout*/
 (function () {
 	'use strict';
 	
@@ -16,8 +16,22 @@
 					}
 				}
 				return arguments[0];
-			}
+			},
+			debounce : function (func, wait, immediate) {
+				var timeout;
+				return function() {
+					var context = this, args = arguments;
+				  	var later = function() {
+						timeout = null;
+						if (!immediate) func.apply(context, args);
+				  	};
+				  	if (immediate && !timeout) func.apply(context, args);
+				  	clearTimeout(timeout);
+				  	timeout = setTimeout(later, wait);
+				};
+			} 
 		};
+	
 	
 	function ResponsiveLoader(o) {
 		this.options = UTILS.extend({}, options, o);
@@ -68,7 +82,7 @@
 			var self = this;
 			this.preloadContent();
 			if (!!this.content.length) {
-				this.conditionHandler = this.checkCondition.bind(this);
+				this.conditionHandler = UTILS.debounce(this.checkCondition.bind(this), 250);
 				if (typeof window.matchMedia != 'undefined' || typeof window.msMatchMedia != 'undefined') {
 					this.conditionHandler();
 					window.addEventListener('resize', self.conditionHandler, false);
